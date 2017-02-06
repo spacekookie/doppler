@@ -4,8 +4,8 @@ import org.gnome.gdk.Event
 import org.gnome.gtk._
 
 object Controller {
-  
-  
+  val DEF_UPPER : Int = 5500
+  val DEF_LOWER : Int = 2000
   
   def main(args: Array[String]) {
     Gtk.init(args);
@@ -21,21 +21,10 @@ object Controller {
     window.setSizeRequest(350, 250);
 
     layout.add(new Label(" Setup Redshift boundry values "));
+    layout.add(new HSeparator);
 
-    var adj = new Adjustment();
-    adj.setLower(2000);
-    adj.setUpper(5500);
-    adj.setValue(3500);
-    var night = new Scale(Orientation.HORIZONTAL, adj);
-
-    var adj2 = new Adjustment();
-    adj2.setLower(2000);
-    adj2.setUpper(5500);
-    adj2.setValue(4500);
-    var day = new Scale(Orientation.HORIZONTAL, adj2);
-
-    layout.add(day);
-    layout.add(night);
+    layout.add(sliderFactory("Day Temperature", 4500));
+    layout.add(sliderFactory("Nights Temperature", 3250));
 
     layout.add(transition);
     layout.add(new HSeparator);
@@ -52,5 +41,16 @@ object Controller {
     })
 
     Gtk.main();
+  }
+  
+  private def sliderFactory(name: String, default: Int) : Scale = {
+    var adj = new Adjustment();
+    adj.setLower(DEF_LOWER);
+    adj.setUpper(DEF_UPPER);
+    adj.setValue(default);
+    
+    var scale = new Scale(Orientation.HORIZONTAL, adj);
+    scale.setTooltipText(name);
+    return scale;
   }
 }
