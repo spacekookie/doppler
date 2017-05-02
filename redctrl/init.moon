@@ -10,11 +10,7 @@ window = with Gtk.Window {
   on_destroy: Gtk.main_quit
 }
 
-  -- Create some more widgets for the window.
-  status_bar = with Gtk.Statusbar!
-    ctx = \get_context_id 'default'
-    \push ctx, 'This is statusbar message.'
-
+  -- Toolbar with buttons at top
   toolbar = with Gtk.Toolbar!
     -- When clicking at the toolbar 'quit' button, destroy the main window.
     \insert Gtk.ToolButton({ 
@@ -41,34 +37,13 @@ window = with Gtk.Window {
         on_value_changed: =>
           val = @get_value!
           newval = math.floor(val/50)*50
-          @set_value newval if val ~= newval
+          @set_value newval if val != newval
       }
     }
 
   -- Daylight temperature
   daylight = create_scale 'daylight', 5000
   nightlight = create_scale 'nightlight', 3500
-
-  -- \pack_start toolbar, false, false, 3 
-  -- Pack everything into the window.
-  -- \add with Gtk.HBox { homogeneous: false }
-    
-  --   -- Add the daylight slider (and label)
-  --   \pack_start (with Gtk.VBox!
-  --     \pack_start (Gtk.Label { label: 'Daylight' }), false, true, 5
-  --     \pack_start (Gtk.Label { label: 'Nightlight' }), false, true, 5
-  --     \pack_start (Gtk.Label { label: 'Enable day-night transitions' }), false, true, 5
-  --   ), false, false, 5
-
-  --   -- Add the nightlight slider (and label)
-  --   \pack_start (with Gtk.VBox!
-  --     \pack_start daylight, false, false, 5
-  --     \pack_start nightlight, false, false, 5
-  --     \pack_start Gtk.Switch!, false, false, 5
-  --   ), true, true, 5
-
-  --   -- \pack_start Gtk.Box!, true, true, 0
-  --   -- \pack_end status_bar, false, false, 0
 
   \add with Gtk.VBox!
     \pack_start toolbar, false, false, 3 
@@ -84,11 +59,25 @@ window = with Gtk.Window {
       \attach (with Gtk.Box!
         \add Gtk.Switch { expand: false, halign: Gtk.ALIGN_START }
       ), 1, 2, 1, 1
-    ), true, true, 1
 
-    \pack_start Gtk.StackSwitcher!, true, true, 1
+      -- Create a stack for Time-based switching
+      label = Gtk.Label { label: 'Test Label 1' }
+      check = Gtk.CheckButton { label: 'Checkbox 1' }      
 
-    \pack_end status_bar, false, false, 0
+      -- Add stack switcher for time/ position settings
+      stack = with Gtk.Stack!
+        \set_transition_type Gtk.StackTransitionType.SLIDE_LEFT_RIGHT
+        \set_transition_duration 250
+        \add_titled label, "label", "A Label"
+        \add_titled check, "check", "A Checkbox"
+
+      stack_switcher = with Gtk.StackSwitcher!
+        \set_stack stack
+
+      \attach (with Gtk.Box!
+        \add stack_switcher), 0, 3, 2, 1
+      -- \attach stack, 0, 4, 2, 1
+    ), true, true, 5
 
   \show_all!
 
