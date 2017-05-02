@@ -61,22 +61,50 @@ window = with Gtk.Window {
       ), 1, 2, 1, 1
 
       -- Create a stack for Time-based switching
-      label = Gtk.Label { label: 'Test Label 1' }
-      check = Gtk.CheckButton { label: 'Checkbox 1' }      
+      time_based = with Gtk.VBox!
+        \pack_start (with Gtk.Grid { row_homogeneous: false, column_homogeneous: true }
+          -- \attach (Gtk.Label { label: 'Set a time to switch screen hue' }), 0, 0, 2, 1
+          \attach (Gtk.Label { label: 'Nighttime' }), 0, 0, 1, 1
+          \attach (Gtk.Label { label: 'Daytime' }), 1, 0, 1, 1
+
+          -- Add the daytime time picker
+          \attach (with Gtk.Box { halign: Gtk.ALIGN_CENTER }
+            \add Gtk.Box {expand: true} -- HACK
+            \add Gtk.SpinButton { orientation: 'VERTICAL' }
+            \add Gtk.Label { label: '  :  ' }
+            \add Gtk.SpinButton { orientation: 'VERTICAL' }
+            \add Gtk.Box {expand: true} -- HACK
+          ), 0, 1, 1, 1
+
+          -- Add the nighttime time picker
+          \attach (with Gtk.Box { halign: Gtk.ALIGN_CENTER }
+            \add Gtk.Box {expand: true} -- HACK
+            \add Gtk.SpinButton { orientation: 'VERTICAL', expand: false }
+            \add Gtk.Label { label: '  :  ', expand: false }
+            \add Gtk.SpinButton { orientation: 'VERTICAL', expand: false }
+            \add Gtk.Box {expand: true} -- HACK
+          ), 1, 1, 1, 1
+
+        ), true, true, 5
+
+
+      location_based = with Gtk.VBox!
+        \pack_start (with Gtk.Grid!
+          \attach (Gtk.Label {label: 'Let the sun decide when screen hue changes' }), 0, 0, 2, 1
+        ), true, true, 5
 
       -- Add stack switcher for time/ position settings
-      stack = with Gtk.Stack!
+      stack = with Gtk.Stack { homogeneous: true }
         \set_transition_type Gtk.StackTransitionType.SLIDE_LEFT_RIGHT
-        \set_transition_duration 250
-        \add_titled label, "label", "A Label"
-        \add_titled check, "check", "A Checkbox"
+        \set_transition_duration 150
+        \add_titled time_based, "time", "By time"
+        \add_titled location_based, "location", "By location"
 
-      stack_switcher = with Gtk.StackSwitcher!
+      stack_switcher = with Gtk.StackSwitcher { homogeneous: true }
         \set_stack stack
 
-      \attach (with Gtk.Box!
-        \add stack_switcher), 0, 3, 2, 1
-      -- \attach stack, 0, 4, 2, 1
+      \attach stack_switcher, 0, 3, 2, 1
+      \attach stack, 0, 4, 2, 1
     ), true, true, 5
 
   \show_all!
