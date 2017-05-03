@@ -8,20 +8,20 @@ return with Gtk.VBox!
     \attach (Gtk.Label { label: 'Daytime' }), 1, 0, 1, 1
 
     -- Add the daytime time picker
-    \attach (with Gtk.Box { halign: Gtk.ALIGN_CENTER }
-      \add Gtk.Box {expand: true} -- HACK
-      \add Gtk.SpinButton { orientation: 'VERTICAL' }
-      \add Gtk.Label { label: '  :  ' }
-      \add Gtk.SpinButton { orientation: 'VERTICAL' }
-      \add Gtk.Box {expand: true} -- HACK
+    \attach (with Gtk.Box { hexpand: true, halign: Gtk.ALIGN_FILL }
+      \set_center_widget (with Gtk.Box { halign: Gtk.ALIGN_CENTER }
+        \add Gtk.SpinButton { orientation: 'VERTICAL', hexpand: false  }
+        \add Gtk.Label { label: '  :  ' }
+        \add Gtk.SpinButton { orientation: 'VERTICAL', hexpand: false  }
+      )
     ), 0, 1, 1, 1
 
     -- Add the nighttime time picker
-    \attach (with Gtk.Box { halign: Gtk.ALIGN_CENTER }
-      \add Gtk.Box { hexpand: true } -- HACK
-      \add Gtk.SpinButton { orientation: 'VERTICAL', hexpand: false }
-      \add Gtk.Label { label: '  :  ', hexpand: false }
-      \add Gtk.SpinButton { orientation: 'VERTICAL', hexpand: false }
-      \add Gtk.Box { hexpand: true } -- HACK
+    \attach (with Gtk.Box { hexpand: true, halign: Gtk.ALIGN_FILL }
+      \set_center_widget (with Gtk.Box { halign: Gtk.ALIGN_CENTER }
+        \add Gtk.SpinButton { orientation: 'VERTICAL', hexpand: false }
+        \add Gtk.Label { label: '  :  ', hexpand: false }
+        \add Gtk.SpinButton { orientation: 'VERTICAL', hexpand: false }
+      )
     ), 1, 1, 1, 1
   ), true, true, 5
