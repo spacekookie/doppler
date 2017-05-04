@@ -9,10 +9,14 @@ class SimpleUI
   new: (ui_handle, redstate)=>
 
     @state = redstate
+    day = @state.color_day
+    night = @state.color_night
 
     -- Create temperature sliders
-    @daylight = @\create_scale 'day', @state.color_day
-    @nightlight = @\create_scale 'night', @state.color_night
+    @daylight = @\create_scale 'day', day, (val) -> @state.color_day = val
+    @nightlight = @\create_scale 'night', night, (val) -> @state.color_night = val
+
+    @trans = Gtk.Switch { expand: false, halign: Gtk.ALIGN_START }
 
     @ui = with Gtk.VBox!
       \pack_start ui_handle.toolbar, false, false, 3 
@@ -26,7 +30,7 @@ class SimpleUI
 
         \attach (Gtk.Label { label: 'Enable day-night transitions' }), 0, 2, 1, 1
         \attach (with Gtk.Box!
-          \add Gtk.Switch { expand: false, halign: Gtk.ALIGN_START }
+          \add @trans
         ), 1, 2, 1, 1
 
         -- 
@@ -52,12 +56,12 @@ class SimpleUI
         \attach (Gtk.Button { label: 'Apply Settings' }), 0, 6, 2, 1
       ), true, true, 5
 
-  create_scale: (id, start) =>
+  create_scale: (id, start, funct) =>
     Gtk.Scale { 
       id: id
       digits: 0
       orientation: 'HORIZONTAL'
-      adjustment: Gtk.Adjustment { 
+        adjustment: Gtk.Adjustment { 
         lower: 2500
         upper: 6000
         value: start
@@ -66,5 +70,6 @@ class SimpleUI
           val = @get_value!
           newval = math.floor(val/50)*50
           @set_value newval if val != newval
+          funct newval -- Set value in state
       }
     }
