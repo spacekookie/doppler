@@ -16,7 +16,13 @@ class SimpleUI
     @daylight = @\create_scale 'day', day, (val) -> @state.color_day = val
     @nightlight = @\create_scale 'night', night, (val) -> @state.color_night = val
 
-    @trans = Gtk.Switch { expand: false, halign: Gtk.ALIGN_START }
+    @trans = Gtk.Switch { 
+      expand: false
+      halign: Gtk.ALIGN_START
+
+      -- Invert state because we're about to set it here!
+      on_state_set: => redstate.transitions = not @get_state!
+    }
 
     @ui = with Gtk.VBox!
       \pack_start ui_handle.toolbar, false, false, 3 
