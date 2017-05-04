@@ -25,3 +25,7 @@ return with Gtk.VBox!
       )
     ), 1, 1, 1, 1
   ), true, true, 5
+
+-- TODO: Export this init function
+-- (state) =>
+--   return box
