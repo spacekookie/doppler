@@ -6,7 +6,9 @@ Gtk = lgi.require 'Gtk'
 class SimpleUI
 
   -- Creates a new SimpleUI and has references to ui_handle and redstate
-  new: (ui_handle, redstate)=>
+  new: (ui_handle, redstate) =>
+
+    print "Fooo #{redstate}"
 
     @state = redstate
     day = @state.color_day
@@ -36,14 +38,13 @@ class SimpleUI
 
         \attach (Gtk.Label { label: 'Enable day-night transitions' }), 0, 2, 1, 1
         \attach (with Gtk.Box!
-          \add @trans
+          \add @trans -- We don't want the switch to expand
         ), 1, 2, 1, 1
 
-        -- 
         \attach (Gtk.Label { label: 'Do you want to change screen hue based on time or location?' }), 0, 3, 2, 1
 
         -- Create sub-groups for time and location settings
-        time_settings = require 'redctrl.time_settings'
+        time_settings = (require 'redctrl.time_settings') redstate
         location_settings = require 'redctrl.location_settings'
 
         -- Add stack switcher for time/ position settings

@@ -15,9 +15,9 @@ class Redstate
     @transitions = true
     @current_state = @@MODE_UNDEFINED
 
-    -- FIXME: Store time as string or number?
-    @time_start = 1800
-    @time_stop = 600
+    -- Store at what time we want to be turned on/ off *rawr*
+    @time_start = '18:00'
+    @time_stop = '06:00'
 
     -- By default you're somewhere in the ocean :)
     @latitude = 0
