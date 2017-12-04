@@ -1,14 +1,16 @@
 extern crate gio;
 extern crate gtk;
+extern crate gdk;
 
 mod example {
     use gio;
     use gtk;
+    use gdk;
 
     use gio::prelude::*;
     use gtk::prelude::*;
 
-    use gtk::{ApplicationWindow, Builder, Switch, Revealer};
+    use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea};
     use std::env::args;
 
     // make moving clones into closures more convenient
@@ -38,6 +40,25 @@ mod example {
         let simple_settings: Revealer = builder.get_object("redctrl_simple_setting").unwrap();
         let normal_settings: Revealer = builder.get_object("redctrl_normal_setting").unwrap();
 
+        let draw: DrawingArea = builder.get_object("redctrl_curve_settings").unwrap();
+
+        draw.connect_draw(move |_self, ctx| {
+            let style_ctx = _self.get_style_context().unwrap();        
+            let width: f64 = _self.get_allocated_width() as f64;
+            let height: f64 = _self.get_allocated_height() as f64;
+            
+            ctx.rectangle(0.0, 0.0, width, height);
+            ctx.set_source_rgba(255.0, 0.0, 0.0, 255.0);
+            ctx.fill();
+
+            ctx.move_to(0.0, height / 2.0);
+            ctx.set_source_rgba (0.25, 0.25, 0.25, 0.75);
+            ctx.rel_curve_to (0.0, 0.0, 75.0, -50.0, 150.0, -height);
+            ctx.stroke ();
+
+            return Inhibit(false);
+        });
+
         switch.connect_changed_active(move |switch| {
             let state = switch.get_active();
             normal_settings.set_reveal_child(!state);
@@ -61,6 +82,7 @@ mod example {
         application.connect_startup(move |app| { build_ui(app); });
         application.connect_activate(|_| {});
 
+        /* Run our app */
         application.run(&args().collect::<Vec<_>>());
     }
 }
