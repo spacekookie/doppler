@@ -1,6 +1,9 @@
 extern crate gio;
 extern crate gtk;
 extern crate gdk;
+extern crate cairo;
+
+mod rendering;
 
 mod example {
     use gio;
@@ -13,6 +16,8 @@ mod example {
     use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea, SpinButton};
     use std::env::args;
     use std::f64;
+
+    use rendering;
 
     // make moving clones into closures more convenient
     macro_rules! clone {
@@ -55,6 +60,7 @@ mod example {
         let end_hour: SpinButton = builder.get_object("end_h").unwrap();
         let end_minute: SpinButton = builder.get_object("end_m").unwrap();
 
+        // let renderer = rendering::Renderer::new();
 
         draw.connect_draw(move |_self, ctx| {
             let style_ctx = _self.get_style_context().unwrap();        
