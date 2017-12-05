@@ -69,7 +69,7 @@ mod example {
             let period: f64 = 75.0;
 
             let dx: f64 = (f64::consts::PI * 2.0 / period) * xspacing;
-            let mut yvalues: Vec<f64> = vec![0.0; 620];
+            let mut yvalues: Vec<f64> = vec![0.0; 1024]; // FIXME: This is a horrible hack 😟
 
             let mut x = theta;
             for i in 0..yvalues.len() {
@@ -87,11 +87,7 @@ mod example {
             let mut old_point: [f64; 2] = [0.0, 0.0];
             for i in 1..yvalues.len() {
                 let new_point: [f64; 2] = [old_point[0] + xspacing, yvalues[i] + (height / 2.0)];
-                println!("{:?}", new_point);
-                // let half_point: [f64; 2] = [old_point[0] + (xspacing / 2.0), old_point[1] + (new_point[1] - old_point[1]) / 2.0];
-
                 ctx.line_to(new_point[0], new_point[1]);
-                // ctx.rel_curve_to(old_point[0], old_point[1], half_point[0], half_point[1], new_point[0], new_point[1]);
                 old_point = new_point;
             }
             ctx.stroke ();
