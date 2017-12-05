@@ -1,6 +1,5 @@
 extern crate gio;
 extern crate gtk;
-extern crate gdk;
 extern crate cairo;
 
 mod rendering;
@@ -8,13 +7,14 @@ mod rendering;
 mod example {
     use gio;
     use gtk;
-    use gdk;
 
     use gio::prelude::*;
     use gtk::prelude::*;
 
-    use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea, SpinButton};
+    use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea};
     use std::env::args;
+    use std::cell::Cell;
+
     use std::f64;
 
     use rendering::*;
@@ -52,13 +52,13 @@ mod example {
         let normal_settings: Revealer = builder.get_object("redctrl_normal_setting").unwrap();
         let draw_area: DrawingArea = builder.get_object("redctrl_curve_settings").unwrap();
 
-        /* Spinner Buttons */
         // let start_hour: SpinButton = builder.get_object("start_h").unwrap();
         // let start_minute: SpinButton = builder.get_object("start_m").unwrap();
 
         // let end_hour: SpinButton = builder.get_object("end_h").unwrap();
         // let end_minute: SpinButton = builder.get_object("end_m").unwrap();
 
+        /* Handle drawing */
         draw_area.connect_draw(move |_self, ctx| {
             // let style_ctx = _self.get_style_context().unwrap();
             let width: f64 = _self.get_allocated_width() as f64;
@@ -69,7 +69,15 @@ mod example {
             ctx.fill();
 
             ctx.set_source_rgba(255.0, 0.0, 0.0, 255.0);
-            draw_wave(ctx, &Area { width, height }, &Point { x: 0.0, y: height / 2.0 });
+            draw_wave(
+                ctx,
+                &Area { width, height },
+                &Point {
+                    x: 0.0,
+                    y: height / 2.0,
+                },
+                0.0,
+            );
 
             return Inhibit(false);
         });

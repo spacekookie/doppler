@@ -35,9 +35,9 @@ trait Drawable {
 }
 
 
-pub fn draw_wave(ctx: &Context, area: &Area, offset: &Point) {
+pub fn draw_wave(ctx: &Context, area: &Area, offset: &Point, time: f64) {
     let mut w = Wave::new(75.0, 75.0);
-    w.time_step(0.0);
+    w.time_step(time);
     w.update(area.width);
     w.draw(|points: &Vec<Point>| for cp in points {
         ctx.line_to(cp.x + offset.x, cp.y + offset.y);

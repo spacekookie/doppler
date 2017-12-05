@@ -48,7 +48,7 @@ impl Wave {
     pub fn update(&mut self, size: f64) {
         let mut points: Vec<Point> = Vec::new();
         let mut ox = 0.0;
-        let mut xy = 0.0;
+        let mut xy = self.theta;
 
         loop {
             let y = f64::sin(xy) * self.amp;
