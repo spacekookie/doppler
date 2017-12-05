@@ -10,8 +10,9 @@ mod example {
     use gio::prelude::*;
     use gtk::prelude::*;
 
-    use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea};
+    use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea, SpinButton};
     use std::env::args;
+    use std::f64;
 
     // make moving clones into closures more convenient
     macro_rules! clone {
@@ -36,30 +37,71 @@ mod example {
         let builder = Builder::new_from_string(ui_src);
 
         let window: ApplicationWindow = builder.get_object("window").expect("Couldn't get Window");
-        let switch: Switch = builder.get_object("redctrl_simple_switch").unwrap();
+        let enable_simple_mode: Switch = builder.get_object("redctrl_simple_switch").unwrap();
+
+        /* Have redshift enabled I guess */
+        let global_state: Switch = builder.get_object("redctrl_enable_switch").unwrap();
+        global_state.set_active(true);
+
         let simple_settings: Revealer = builder.get_object("redctrl_simple_setting").unwrap();
         let normal_settings: Revealer = builder.get_object("redctrl_normal_setting").unwrap();
 
         let draw: DrawingArea = builder.get_object("redctrl_curve_settings").unwrap();
+
+        /* Spinner Buttons */
+        let start_hour: SpinButton = builder.get_object("start_h").unwrap();
+        let start_minute: SpinButton = builder.get_object("start_m").unwrap();
+
+        let end_hour: SpinButton = builder.get_object("end_h").unwrap();
+        let end_minute: SpinButton = builder.get_object("end_m").unwrap();
+
 
         draw.connect_draw(move |_self, ctx| {
             let style_ctx = _self.get_style_context().unwrap();        
             let width: f64 = _self.get_allocated_width() as f64;
             let height: f64 = _self.get_allocated_height() as f64;
             
+            let xspacing: f64 = 2.0;
+            let w: i64 = (width as i64) + 16;
+
+            let theta: f64 = 0.0;
+            let amplitude: f64 = 75.5;
+            let period: f64 = 75.0;
+
+            let dx: f64 = (f64::consts::PI * 2.0 / period) * xspacing;
+            let mut yvalues: Vec<f64> = vec![0.0; 620];
+
+            let mut x = theta;
+            for i in 0..yvalues.len() {
+                yvalues[i] = f64::sin(x) * amplitude;
+                x += dx;
+            }
+
             ctx.rectangle(0.0, 0.0, width, height);
-            ctx.set_source_rgba(255.0, 0.0, 0.0, 255.0);
+            ctx.set_source_rgba (255.0, 196.0, 119.0, 0.85);
             ctx.fill();
 
             ctx.move_to(0.0, height / 2.0);
-            ctx.set_source_rgba (0.25, 0.25, 0.25, 0.75);
-            ctx.rel_curve_to (0.0, 0.0, 75.0, -50.0, 150.0, -height);
+            ctx.set_source_rgba(255.0, 0.0, 0.0, 255.0);
+
+            let mut old_point: [f64; 2] = [0.0, 0.0];
+            for i in 1..yvalues.len() {
+                let new_point: [f64; 2] = [old_point[0] + xspacing, yvalues[i] + (height / 2.0)];
+                println!("{:?}", new_point);
+                // let half_point: [f64; 2] = [old_point[0] + (xspacing / 2.0), old_point[1] + (new_point[1] - old_point[1]) / 2.0];
+
+                ctx.line_to(new_point[0], new_point[1]);
+                // ctx.rel_curve_to(old_point[0], old_point[1], half_point[0], half_point[1], new_point[0], new_point[1]);
+                old_point = new_point;
+            }
             ctx.stroke ();
+
+            // ctx.rel_curve_to (0.0, 0.0, 75.0, -50.0, 150.0, -height);
 
             return Inhibit(false);
         });
 
-        switch.connect_changed_active(move |switch| {
+        enable_simple_mode.connect_changed_active(move |switch| {
             let state = switch.get_active();
             normal_settings.set_reveal_child(!state);
             simple_settings.set_reveal_child(state);
