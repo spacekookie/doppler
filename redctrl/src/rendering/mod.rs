@@ -18,16 +18,30 @@ use self::waves::Wave;
 
 /// Represents the available drawing area at a given time
 pub struct Area {
-    width: f64,
-    height: f64,
+    pub width: f64,
+    pub height: f64,
 }
 
 /// Represents a single point on a drawing area
 pub struct Point {
-    x: f64,
-    y: f64,
+    pub x: f64,
+    pub y: f64,
 }
 
-pub fn draw_wave(ctx: &Context, area: &Area) {
-    let w = Wave::new(75.0, 75.0);
+trait Drawable {
+    fn draw<F>(&self, renderer: F)
+    where
+        F: Fn(&Vec<Point>);
+}
+
+
+pub fn draw_wave(ctx: &Context, area: &Area, offset: &Point) {
+    let mut w = Wave::new(75.0, 75.0);
+    w.time_step(0.0);
+    w.update(area.width);
+    w.draw(|points: &Vec<Point>| for cp in points {
+        ctx.line_to(cp.x + offset.x, cp.y + offset.y);
+    });
+
+    ctx.stroke();
 }
