@@ -1,5 +1,6 @@
 extern crate gio;
 extern crate gtk;
+extern crate gdk;
 extern crate cairo;
 
 mod rendering;
@@ -11,13 +12,16 @@ mod example {
     use gio::prelude::*;
     use gtk::prelude::*;
 
-    use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea};
+    use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea, Scale};
     use std::env::args;
     use std::cell::Cell;
+    use std::sync::{Arc, Mutex};
 
     use std::f64;
 
     use rendering::*;
+
+    static mut scale_val: Cell<f64> = Cell::new(0.0);
 
     // make moving clones into closures more convenient
     macro_rules! clone {
@@ -51,6 +55,7 @@ mod example {
         let simple_settings: Revealer = builder.get_object("redctrl_simple_setting").unwrap();
         let normal_settings: Revealer = builder.get_object("redctrl_normal_setting").unwrap();
         let draw_area: DrawingArea = builder.get_object("redctrl_curve_settings").unwrap();
+        let color_scale: Scale = builder.get_object("redctl_change_value").unwrap();
 
         // let start_hour: SpinButton = builder.get_object("start_h").unwrap();
         // let start_minute: SpinButton = builder.get_object("start_m").unwrap();
@@ -63,24 +68,47 @@ mod example {
             // let style_ctx = _self.get_style_context().unwrap();
             let width: f64 = _self.get_allocated_width() as f64;
             let height: f64 = _self.get_allocated_height() as f64;
+            let area = Area { width, height };
+            let offset = Point {
+                x: 0.0,
+                y: height / 2.0,
+            };
+
+            let other_offset = Point {
+                x: -2.5,
+                y: height / 2.0,
+            };
 
             ctx.rectangle(0.0, 0.0, width, height);
             ctx.set_source_rgba(255.0, 196.0, 119.0, 0.85);
             ctx.fill();
 
-            ctx.set_source_rgba(255.0, 0.0, 0.0, 255.0);
-            draw_wave(
-                ctx,
-                &Area { width, height },
-                &Point {
-                    x: 0.0,
-                    y: height / 2.0,
-                },
-                0.0,
-            );
+            unsafe {
+                let t = scale_val.get();
+                set_time_displacement(t);
+            }
+
+            set_draw_color(255.0, 0.0, 0.0, 255.0);
+            draw_wave(ctx, &area, &offset, 75.0, 75.0);
+
+            set_draw_color(0.0, 255.0, 0.0, 255.0);
+            draw_wave(ctx, &area, &other_offset, 25.0, 25.0);
+
+            set_draw_color(0.0, 0.0, 255.0, 255.0);
+            draw_wave(ctx, &area, &offset, 250.0, 50.0);
 
             return Inhibit(false);
         });
+
+        color_scale.connect_value_changed(move |sc: &Scale| {
+            unsafe {
+                scale_val.set(sc.get_value());
+            }
+
+            println!("Scale value: {}", sc.get_value());
+            draw_area.queue_draw();
+        });
+
 
         enable_simple_mode.connect_changed_active(move |switch| {
             let state = switch.get_active();

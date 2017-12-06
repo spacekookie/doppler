@@ -559,7 +559,7 @@
                                         <property name="can_focus">False</property>
                                         <property name="orientation">vertical</property>
                                         <child>
-                                          <object class="GtkScale" id="bla">
+                                          <object class="GtkScale" id="redctl_change_value">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="adjustment">adjustment1</property>
@@ -639,9 +639,6 @@
                   </object>
                 </child>
               </object>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>

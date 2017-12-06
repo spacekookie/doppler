@@ -12,6 +12,7 @@
 //!  - Render selection handles
 
 use cairo::Context;
+use gdk::RGBA;
 
 mod waves;
 use self::waves::Wave;
@@ -34,10 +35,28 @@ trait Drawable {
         F: Fn(&Vec<Point>);
 }
 
+static mut CHOSEN_COLOR: RGBA = RGBA { red: 1f64, green: 0f64, blue: 0f64, alpha: 1f64 };
+static mut WAVE_THETA: f64 = 0.0;
 
-pub fn draw_wave(ctx: &Context, area: &Area, offset: &Point, time: f64) {
-    let mut w = Wave::new(75.0, 75.0);
-    w.time_step(time);
+pub fn set_time_displacement(theta: f64) {
+    unsafe {
+        WAVE_THETA = theta;
+    }
+}
+
+pub fn set_draw_color(red: f64, green: f64, blue: f64, alpha: f64) {
+    unsafe {
+        CHOSEN_COLOR = RGBA { red: red, green: green, blue: blue, alpha: alpha };
+    }
+}
+
+pub fn draw_wave(ctx: &Context, area: &Area, offset: &Point, period: f64, amp: f64) {
+    let mut w = Wave::new(period, amp);
+    unsafe {
+        w.time_step(WAVE_THETA);
+        ctx.set_source_rgba(CHOSEN_COLOR.red, CHOSEN_COLOR.green, CHOSEN_COLOR.blue, CHOSEN_COLOR.alpha);
+    }
+    
     w.update(area.width);
     w.draw(|points: &Vec<Point>| for cp in points {
         ctx.line_to(cp.x + offset.x, cp.y + offset.y);

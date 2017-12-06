@@ -32,7 +32,7 @@ impl Drawable for Wave {
 impl Wave {
     /// Create a new (sin) Wave for a given period and amplitude
     pub fn new(period: f64, amp: f64) -> Wave {
-        let spacing: f64 = 4.0; // Default spacing
+        let spacing: f64 = 1.0; // Default spacing
         let dx: f64 = (f64::consts::PI * 2.0 / period) * spacing;
 
         return Wave {
