@@ -2,25 +2,20 @@ extern crate gio;
 extern crate gtk;
 extern crate gdk;
 extern crate cairo;
+extern crate colortemp;
 
-mod rendering;
-
-use gio;
-use gtk;
-
+use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea, Scale};
 use gio::prelude::*;
 use gtk::prelude::*;
 
-use gtk::{ApplicationWindow, Builder, Switch, Revealer, DrawingArea, Scale};
 use std::env::args;
 use std::cell::Cell;
-use std::sync::{Arc, Mutex};
-
 use std::f64;
 
+mod rendering;
 use rendering::*;
 
-static mut scale_val: Cell<f64> = Cell::new(0.0);
+static mut SCALE_VAL: Cell<f64> = Cell::new(0.0);
 
 // make moving clones into closures more convenient
 macro_rules! clone {
@@ -83,7 +78,7 @@ pub fn build_ui(application: &gtk::Application) {
         ctx.fill();
 
         unsafe {
-            let t = scale_val.get();
+            let t = SCALE_VAL.get();
             set_time_displacement(t);
         }
 
@@ -101,7 +96,7 @@ pub fn build_ui(application: &gtk::Application) {
 
     color_scale.connect_value_changed(move |sc: &Scale| {
         unsafe {
-            scale_val.set(sc.get_value());
+            SCALE_VAL.set(sc.get_value());
         }
 
         println!("Scale value: {}", sc.get_value());
@@ -125,13 +120,36 @@ pub fn build_ui(application: &gtk::Application) {
 }
 
 pub fn main() {
-    let application =
-        gtk::Application::new("de.spacekookie.doppler", gio::ApplicationFlags::empty())
-            .expect("Initialization failed...");
+    // let application =
+    //     gtk::Application::new("de.spacekookie.doppler", gio::ApplicationFlags::empty())
+    //         .expect("Initialization failed...");
 
-    application.connect_startup(move |app| { build_ui(app); });
-    application.connect_activate(|_| {});
+    // application.connect_startup(move |app| { build_ui(app); });
+    // application.connect_activate(|_| {});
 
-    /* Run our app */
-    application.run(&args().collect::<Vec<_>>());
+    // /* Run our app */
+    // application.run(&args().collect::<Vec<_>>());
+    use std::collections::HashMap;
+
+    use std::cell::Cell;
+
+    struct SomeStruct {
+        regular_field: u8,
+        special_field: Cell<u8>,
+    }
+
+    let my_struct = SomeStruct {
+        regular_field: 0,
+        special_field: Cell::new(1),
+    };
+
+    let new_value = 100;
+
+    // ERROR, because my_struct is immutable
+    // my_struct.regular_field = new_value;
+
+    // WORKS, although `my_struct` is immutable, field `special_field` is mutable because it is Cell
+    my_struct.special_field.set(new_value);
+    assert_eq!(my_struct.special_field.get(), new_value);
+
 }
