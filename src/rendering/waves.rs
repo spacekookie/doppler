@@ -5,7 +5,7 @@
 //! Cairo.
 //!
 //! All waves are rendered by line interpolation. The minimum stepping distance
-//! can be configured (default is 4px). Generally the compute and plot algorithms
+//! can be configured (default is 2px). Generally the compute and plot algorithms
 //! are in time complexity O(n). Imperformant functions are marked as such.
 
 use rendering::{Point, Drawable};
@@ -33,7 +33,7 @@ impl Drawable for Wave {
 impl Wave {
     /// Create a new (sin) Wave for a given period and amplitude
     pub fn new(period: f64, amp: f64) -> Wave {
-        let spacing: f64 = 1.0; // Default spacing
+        let spacing: f64 = 2.0; // Default spacing
         let dx: f64 = (f64::consts::PI * 2.0 / period) * spacing;
 
         return Wave {

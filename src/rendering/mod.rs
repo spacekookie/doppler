@@ -17,6 +17,10 @@ use gdk::RGBA;
 mod waves;
 use self::waves::Wave;
 
+mod curve;
+pub use self::curve::*;
+
+
 /// Represents the available drawing area at a given time
 pub struct Area {
     pub width: f64,
