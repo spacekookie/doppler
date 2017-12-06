@@ -20,6 +20,7 @@ pub struct Wave {
     points: Vec<Point>,
 }
 
+// FIXME: This API is stupid 😝
 impl Drawable for Wave {
     fn draw<F>(&self, renderer: F)
     where
