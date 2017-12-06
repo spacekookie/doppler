@@ -1,6 +1,8 @@
 [package]
-name = "redctrl"
-version = "0.1.0"
+name = "doppler"
+description = "A powreful and feature-rich Gtk+ frontend for redshift"
+version = "0.0.1"
+license = "MIT/X11"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
 
 [dependencies]
@@ -13,7 +15,3 @@ cairo-rs = { version = "^0", features = ["png"] }
 [features]
 default = ["gtk_3_10"]
 gtk_3_10 = ["gtk/v3_10"]
-# gtk_3_16 = ["gtk_3_10", "gtk/v3_16"]
-# gtk_3_18 = ["gtk_3_16", "gtk/v3_18"] #for CI tools
-# gtk_3_20 = ["gtk_3_18", "gtk/v3_20"] #for CI tools
-# gtk_3_22 = ["gtk_3_20", "gtk/v3_22"] #for CI tools

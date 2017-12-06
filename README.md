@@ -1,5 +1,3 @@
-# Redshift Control
+# Doppler
 
-If it looks like I don't know what I'm doing, it's because I don't 😝
-
-![Basic settings UI](ui.png)
+A powreful and feature-rich Gtk+ frontend for redshift. It allows you to configure different display temperatures for each time of day with configurable transition states between them. Automatic sunrise/ sunset detection via `geoclue`. Inspired by [f.lux](https://justgetflux.com/)

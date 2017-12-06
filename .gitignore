@@ -1,2 +1,2 @@
-settings.ui~
-ui
+target/
+**/*.rs.bk

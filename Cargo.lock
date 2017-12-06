@@ -44,6 +44,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "doppler"
+version = "0.0.1"
+dependencies = [
+ "cairo-rs 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gdk 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gio 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glib 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gtk 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "gdk"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -239,17 +250,6 @@ dependencies = [
 name = "pkg-config"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "redctrl"
-version = "0.1.0"
-dependencies = [
- "cairo-rs 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gdk 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gio 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "glib 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gtk 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
 
 [[package]]
 name = "winapi"
