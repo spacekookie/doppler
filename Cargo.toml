@@ -1,6 +1,6 @@
 [package]
 name = "doppler"
-description = "A powreful and feature-rich Gtk+ frontend for redshift"
+description = "A powerful and feature-rich Gtk+ frontend for redshift"
 version = "0.0.1"
 license = "MIT/X11"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
