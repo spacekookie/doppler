@@ -10,6 +10,7 @@ use gtk::prelude::*;
 
 use std::env::args;
 use std::cell::Cell;
+use std::sync::Mutex;
 use std::f64;
 
 mod rendering;
@@ -57,6 +58,11 @@ pub fn build_ui(application: &gtk::Application) {
     // let end_hour: SpinButton = builder.get_object("end_h").unwrap();
     // let end_minute: SpinButton = builder.get_object("end_m").unwrap();
 
+    /* Represent the central finite curve */
+    let mut c = Curve::new();
+    c.add_segment(SegmentType::DAY, 125., 50);
+    let curve = Mutex::new(c);
+
     /* Handle drawing */
     draw_area.connect_draw(move |_self, ctx| {
         // let style_ctx = _self.get_style_context().unwrap();
@@ -68,31 +74,32 @@ pub fn build_ui(application: &gtk::Application) {
             y: height / 2.0,
         };
 
-        let other_offset = Point {
-            x: -2.5,
-            y: height / 2.0,
-        };
-
         ctx.rectangle(0.0, 0.0, width, height);
         ctx.set_source_rgba(255.0, 196.0, 119.0, 0.85);
         ctx.fill();
 
-        unsafe {
-            let t = SCALE_VAL.get();
-            set_time_displacement(t);
-        }
+        let mut c = curve.lock().unwrap();
+        c.set_size(width, height);
+        c.draw(&area, &ctx);
+        drop(c);
 
-        set_draw_color(255.0, 0.0, 0.0, 255.0);
-        draw_wave(ctx, &area, &offset, 75.0, 75.0);
 
-        set_draw_color(0.0, 255.0, 0.0, 255.0);
-        draw_wave(ctx, &area, &other_offset, 25.0, 25.0);
+        // unsafe {
+        //     let t = SCALE_VAL.get();
+        //     set_time_displacement(t);
+        // }
 
-        set_draw_color(0.0, 0.0, 255.0, 255.0);
-        draw_wave(ctx, &area, &offset, 250.0, 50.0);
+        // draw_wave(ctx, &area, &offset, 75.0, 75.0);
+
+        // set_draw_color(0.0, 255.0, 0.0, 255.0);
+        // draw_wave(ctx, &area, &other_offset, 25.0, 25.0);
+
+        // set_draw_color(0.0, 0.0, 255.0, 255.0);
+        // draw_wave(ctx, &area, &offset, 250.0, 50.0);
 
         return Inhibit(false);
     });
+
 
     color_scale.connect_value_changed(move |sc: &Scale| {
         unsafe {
@@ -120,36 +127,13 @@ pub fn build_ui(application: &gtk::Application) {
 }
 
 pub fn main() {
-    // let application =
-    //     gtk::Application::new("de.spacekookie.doppler", gio::ApplicationFlags::empty())
-    //         .expect("Initialization failed...");
+    let application =
+        gtk::Application::new("de.spacekookie.doppler", gio::ApplicationFlags::empty())
+            .expect("Initialization failed...");
 
-    // application.connect_startup(move |app| { build_ui(app); });
-    // application.connect_activate(|_| {});
+    application.connect_startup(move |app| { build_ui(app); });
+    application.connect_activate(|_| {});
 
-    // /* Run our app */
-    // application.run(&args().collect::<Vec<_>>());
-    use std::collections::HashMap;
-
-    use std::cell::Cell;
-
-    struct SomeStruct {
-        regular_field: u8,
-        special_field: Cell<u8>,
-    }
-
-    let my_struct = SomeStruct {
-        regular_field: 0,
-        special_field: Cell::new(1),
-    };
-
-    let new_value = 100;
-
-    // ERROR, because my_struct is immutable
-    // my_struct.regular_field = new_value;
-
-    // WORKS, although `my_struct` is immutable, field `special_field` is mutable because it is Cell
-    my_struct.special_field.set(new_value);
-    assert_eq!(my_struct.special_field.get(), new_value);
-
+    /* Run our app */
+    application.run(&args().collect::<Vec<_>>());
 }
