@@ -1,0 +1,8 @@
+# TODO
+
+ - Write a function that maps temperature to coordinates (heights)
+ - Properly draw and scale curve segments
+ - Implement mouse context handling
+ - Draw "selected" curve elements differently
+ - Update slider to "selected" value
+ - Implement segment dragging
