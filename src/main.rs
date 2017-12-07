@@ -61,7 +61,8 @@ pub fn build_ui(application: &gtk::Application) {
     /* Represent the central finite curve */
     let mut c = Curve::new();
     c.add_segment(SegmentType::DAY, 250., 50);
-    c.add_segment(SegmentType::DUSK, 75., 125);
+    c.add_segment(SegmentType::DUSK, 75., 110);
+    c.add_segment(SegmentType::NIGHT, 250., 150);
     let curve = Mutex::new(c);
 
     /* Handle drawing */

@@ -98,18 +98,25 @@ impl Curve {
     pub fn draw(&self, frame: &Area, ctx: &Context) {
         let day = self.segments.get(&SegmentType::DAY).unwrap();
         let dusk = self.segments.get(&SegmentType::DUSK).unwrap();
-        // let night = self.segments.get(&SegmentType::NIGHT).unwrap();
+        let night = self.segments.get(&SegmentType::NIGHT).unwrap();
 
         // ctx.set_source_rgba(CHOSEN_COLOR.red, CHOSEN_COLOR.green, CHOSEN_COLOR.blue, CHOSEN_COLOR.alpha)
 
+        ctx.set_line_width(4.5);
         ctx.set_source_rgba(0.75, 0.75, 0.75, 0.85);
         ctx.move_to(0., day.level);
         ctx.line_to(day.length, day.level);
         ctx.stroke();
+        ctx.set_line_width(2.5);
 
-        ctx.set_source_rgba(0.95, 0.0, 0.0, 0.85);
+        ctx.set_source_rgba(1., 0.4, 0.0, 0.85);
         ctx.move_to(day.length, dusk.level);
         ctx.line_to(day.length + dusk.length, dusk.level);
+        ctx.stroke();
+
+        ctx.set_source_rgba(1.0, 0.0, 0.0, 0.85);
+        ctx.move_to(day.length + dusk.length, night.level);
+        ctx.line_to(day.length + dusk.length + night.length, night.level);
         ctx.stroke();
     }
 }
