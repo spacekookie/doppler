@@ -14,6 +14,7 @@ use gdk::RGBA;
 use colortemp::{rgb_to_temp, temp_to_rgb};
 use rendering::{Area, Point};
 use std::collections::HashMap;
+use cairo::Context;
 
 /// Segment types for each time of day
 #[derive(Hash, PartialEq, Eq)]
@@ -25,14 +26,16 @@ pub enum SegmentType {
 
 /// Represents a self-container rendering segment for the control curve
 pub struct Segment {
-    length: f64,
-    level: f64,
-    color: RGBA,
+    pub length: f64,
+    pub level: f64,
+    pub color: RGBA,
 }
 
 const ALPHA: f64 = 125.0; // TODO: Make the alpha configurable
 
 impl Segment {
+
+    /// Create a new Segment to control
     pub fn new(ctx: &Area, length: f64, kelvin: i64) -> Segment {
         let rgb = temp_to_rgb(kelvin);
 
@@ -61,7 +64,7 @@ impl Segment {
     }
 
     fn temperature_to_level(kelvin: i64, height: f64) -> f64 {
-        return kelvin as f64 / height;
+        return kelvin as f64;
     }
 }
 
@@ -92,12 +95,16 @@ impl Curve {
         self.segments.insert(t, s);
     }
 
-    pub fn draw(&self, frame: &Area, offset: &Point) {
-        let day = self.segments.get(&SegmentType::DAY);
-        let dusk = self.segments.get(&SegmentType::DUSK);
-        let night = self.segments.get(&SegmentType::NIGHT);
+    pub fn draw(&self, frame: &Area, ctx: &Context) {
+        let day = self.segments.get(&SegmentType::DAY).unwrap();
+        // let dusk = self.segments.get(&SegmentType::DUSK).unwrap();
+        // let night = self.segments.get(&SegmentType::NIGHT).unwrap();
 
+        // ctx.set_source_rgba(CHOSEN_COLOR.red, CHOSEN_COLOR.green, CHOSEN_COLOR.blue, CHOSEN_COLOR.alpha)
 
-
+        ctx.set_source_rgba(255.0, 0.0, 0.0, 0.85);
+        ctx.move_to(0., day.level);
+        ctx.line_to(day.length, day.level);
+        ctx.stroke();
     }
 }
