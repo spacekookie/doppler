@@ -1,0 +1,3 @@
+[submodule "libredshift"]
+	path = libredshift
+	url = https://github.com/spacekookie/libredshift.git
